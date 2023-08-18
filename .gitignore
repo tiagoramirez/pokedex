@@ -36,3 +36,6 @@ lerna-debug.log*
 
 # Database folder
 mongo
+
+# Environment files
+.env
