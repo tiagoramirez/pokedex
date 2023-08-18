@@ -17,7 +17,14 @@ npm i -g @nestjs/cli
 ```
 docker-compose up -d
 ```
-5. Restore database with seed
+5. Clone ```.env.template``` and rename to ```.env```
+6. Fill environment variables in ```.env```
+7. Start app in dev mode
+```
+yarn start:dev 
+```
+8. Restore database with seed
+
 ```
 http://localhost:3000/api/v1/seed
 ```

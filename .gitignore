@@ -39,3 +39,6 @@ mongo
 
 # Environment files
 .env
+
+# Node files
+yarn.lock
