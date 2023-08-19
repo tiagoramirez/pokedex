@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { PokeResponse } from './interfaces/poke-response.interface';
-import { PokemonService } from 'src/pokemon/pokemon.service';
-import { CreatePokemonDto } from 'src/pokemon/dto/create-pokemon.dto';
-import { AxiosAdapter } from 'src/common/adapters/axios.adapter';
+import { PokemonService } from '../pokemon/pokemon.service';
+import { CreatePokemonDto } from '../pokemon/dto/create-pokemon.dto';
+import { AxiosAdapter } from '../common/adapters/axios.adapter';
 
 @Injectable()
 export class SeedService {
