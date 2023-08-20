@@ -1,5 +1,5 @@
 FROM node:18-alpine3.18 AS deps
-RUN apk add --no-cache libc6-compat bash
+RUN apk add --no-cache libc6-compat
 WORKDIR /app
 COPY package.json yarn.lock ./
 RUN yarn install --frozen-lockfile
@@ -15,5 +15,6 @@ WORKDIR /usr/src/app
 COPY package.json yarn.lock ./
 RUN yarn install --prod
 COPY --from=builder /app/dist ./dist
+COPY --from=builder /app/public ./public
 
 CMD [ "node","dist/main" ]

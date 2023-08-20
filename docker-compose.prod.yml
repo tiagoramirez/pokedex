@@ -16,6 +16,7 @@ services:
       - NODE_ENV=${NODE_ENV}
       - MONGODB_URL=${MONGODB_URL}
       - DEFAULT_LIMIT=${DEFAULT_LIMIT}
+      - PORT=${PORT}
 
   db:
     image: mongo:6
