@@ -1,0 +1,5 @@
+.git/
+dist/
+mongo/
+node_modules/
+.gitignore

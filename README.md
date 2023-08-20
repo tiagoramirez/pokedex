@@ -29,6 +29,15 @@ yarn start:dev
 http://localhost:3000/api/v1/seed
 ```
 
+# Production
+
+1. Clone ```.env.template``` and rename to ```.env.prod```
+2. Fill environment variables in ```.env.prod```
+3.Build and run image
+```
+docker-compose -f docker-compose.prod.yml --env-file .env.prod up -d --build
+```
+
 ## Technologies
 * Nest
 * Node

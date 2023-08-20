@@ -1,0 +1,29 @@
+version: "3.8"
+
+services:
+  app:
+    depends_on:
+      - db
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    image: tiagoramirez/pokeapp
+    container_name: pokeapp
+    restart: always
+    ports:
+      - "${PORT}:${PORT}"
+    environment:
+      - NODE_ENV=${NODE_ENV}
+      - MONGODB_URL=${MONGODB_URL}
+      - DEFAULT_LIMIT=${DEFAULT_LIMIT}
+
+  db:
+    image: mongo:6
+    container_name: mongo-poke
+    restart: always
+    ports:
+      - 27017:27017
+    environment:
+      - MONGODB_DATABASE=nest-pokemon
+    volumes:
+      - ./mongo:/data/db
