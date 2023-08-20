@@ -1,7 +1,9 @@
-<p style="display:flex; justify-content:space-evenly; align-items: center;">
-  <img src="https://external-content.duckduckgo.com/iu/?u=http%3A%2F%2Flogos-download.com%2Fwp-content%2Fuploads%2F2016%2F09%2FDocker_logo.png&f=1&nofb=1&ipt=4162a311f9a5972d32f162533f73cc421d6c4f716446448d9cff4fc70cba9fbf&ipo=images" style='width:6rem' alt="Docker Logo" />
+<p align="center">
   <img src="https://nestjs.com/img/logo-small.svg" style='width:6rem' alt="Nest Logo" />
-  <img src="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fwww.orangemantra.com%2Fwp-content%2Fuploads%2F2021%2F07%2Fmongodb_logo.png&f=1&nofb=1&ipt=d80841a805f11062f0d103389574bfd0005e0ff9aa64cd176cadb6a5386a4af3&ipo=images" style='width:10rem' alt="Mongo Logo" />
+  &emsp;
+  &emsp;
+  &emsp;
+  <img src="https://external-content.duckduckgo.com/iu/?u=http%3A%2F%2Flogos-download.com%2Fwp-content%2Fuploads%2F2016%2F09%2FDocker_logo.png&f=1&nofb=1&ipt=4162a311f9a5972d32f162533f73cc421d6c4f716446448d9cff4fc70cba9fbf&ipo=images" style='width:6rem' alt="Docker Logo" />
 </p>
 
 # Developer
