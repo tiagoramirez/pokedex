@@ -14,6 +14,17 @@ export class Pokemon extends Document {
     index: true,
   })
   no: number;
+
+  types: string[];
+
+  sprites: Sprites;
+}
+
+interface Sprites {
+  front_default: string;
+  front_female?: string;
+  front_shiny: string;
+  front_shiny_female?: string;
 }
 
 export const PokemonSchema = SchemaFactory.createForClass(Pokemon);
