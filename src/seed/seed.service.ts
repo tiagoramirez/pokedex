@@ -9,6 +9,7 @@ import { ConfigService } from '@nestjs/config';
 @Injectable()
 export class SeedService {
   private readonly initialPokemons: number;
+  private readonly envMode: string;
 
   constructor(
     private readonly pokemonService: PokemonService,
@@ -16,9 +17,13 @@ export class SeedService {
     private readonly configService: ConfigService,
   ) {
     this.initialPokemons = this.configService.get<number>('maxPokemonSeed');
+    this.envMode = this.configService.get<string>('environment');
   }
 
   async executeSeed() {
+    if (this.envMode === 'prod')
+      return { message: "Cannot execute seed in 'production' mode" };
+
     await this.pokemonService.removeAll();
 
     const pokemons = await this.getPokemons();

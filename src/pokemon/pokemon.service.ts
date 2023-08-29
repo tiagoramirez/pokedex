@@ -15,6 +15,7 @@ import { ConfigService } from '@nestjs/config';
 @Injectable()
 export class PokemonService {
   private readonly defaultLimit: number;
+  private readonly envMode: string;
 
   constructor(
     @InjectModel(Pokemon.name)
@@ -22,9 +23,13 @@ export class PokemonService {
     private readonly configService: ConfigService,
   ) {
     this.defaultLimit = this.configService.get<number>('defaultLimit');
+    this.envMode = this.configService.get<string>('environment');
   }
 
   async create(createPokemonDto: CreatePokemonDto) {
+    if (this.envMode === 'prod')
+      return { message: "Cannot create pokemon in 'production' mode" };
+
     const lowerCasedName = createPokemonDto.name.toLocaleLowerCase().trim();
     const pokemonToInsert = {
       ...createPokemonDto,
@@ -87,6 +92,9 @@ export class PokemonService {
   }
 
   async update(term: string, updatePokemonDto: UpdatePokemonDto) {
+    if (this.envMode === 'prod')
+      return { message: "Cannot update any pokemon in 'production' mode" };
+
     const pokemon = await this.findOne(term);
 
     try {
@@ -116,6 +124,9 @@ export class PokemonService {
 
     // const result = await this.pokemonModel.findByIdAndDelete(id);
 
+    if (this.envMode === 'prod')
+      return { message: "Cannot delete any pokemon in 'production' mode" };
+
     const { deletedCount } = await this.pokemonModel.deleteOne({ _id: id });
     if (deletedCount === 0)
       throw new NotFoundException(`Pokemon whith id "${id}" not found`);
@@ -137,7 +148,7 @@ export class PokemonService {
       console.log('Unhandled error: ');
       console.log(error);
       throw new InternalServerErrorException(
-        "Can't create pokemon. Check server logs",
+        'Unable to process request. Check server logs',
       );
     }
   }
