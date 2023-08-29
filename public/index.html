@@ -1,14 +1,24 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>tiagoramirez's pokedex</title>
-    <link rel="stylesheet" href="./css/styles.css">
-</head>
-<body>
+    <link rel="stylesheet" href="./css/styles.css" />
+  </head>
+  <body>
     <h1>tiagoramirez's pokedex</h1>
-    <img src="./img/sad_pokemon.jpg" alt="Sad pokemon">
-    <p>Error :'c</p>
-</body>
+    <img src="./img/sad_pokemon.jpg" alt="Sad pokemon" />
+    <div class="endpoints">
+      <h2>Try the following endpoints with <span>GET</span> method:</h2>
+      <a href="./api/v1/pokemon">GET /api/v1/pokemon</a>
+      <a href="./api/v1/pokemon?limit=40">GET /api/v1/pokemon?limit=40</a>
+      <a href="./api/v1/pokemon?offset=20">GET /api/v1/pokemon?offset=20</a>
+      <a href="./api/v1/pokemon?limit=40&offset=20"
+        >GET /api/v1/pokemon?limit=40&offset=20</a
+      >
+      <a href="./api/v1/pokemon/25">GET /api/v1/pokemon/25</a>
+      <a href="./api/v1/pokemon/charizard">GET /api/v1/pokemon/charizard</a>
+    </div>
+  </body>
 </html>
