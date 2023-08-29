@@ -3,7 +3,7 @@ import { PokeResponse } from './interfaces/poke-response.interface';
 import { PokemonService } from '../pokemon/pokemon.service';
 import { CreatePokemonDto } from '../pokemon/dto/create-pokemon.dto';
 import { AxiosAdapter } from '../common/adapters/axios.adapter';
-import { PokeImgResponse } from './interfaces/poke-img-response.interface';
+import { PokeExtraInfoResponse } from './interfaces/poke-extra-info-response.interface';
 import { ConfigService } from '@nestjs/config';
 
 @Injectable()
@@ -57,7 +57,7 @@ export class SeedService {
   }
 
   private async getPokemonExtraInfo(pokeNumber: number) {
-    const { sprites, types } = await this.http.get<PokeImgResponse>(
+    const { sprites, types } = await this.http.get<PokeExtraInfoResponse>(
       `https://pokeapi.co/api/v2/pokemon-form/${pokeNumber}`,
     );
     const pokemonSprites = {

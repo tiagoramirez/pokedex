@@ -1,4 +1,4 @@
-export interface PokeImgResponse {
+export interface PokeExtraInfoResponse {
   form_name: string;
   form_names: any[];
   form_order: number;
