@@ -33,5 +33,7 @@ export interface Sprites {
 
 export interface Type {
   slot: number;
-  type: Pokemon;
+  type: TypeInfo;
 }
+
+export interface TypeInfo extends Pokemon {}

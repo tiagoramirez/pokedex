@@ -56,17 +56,26 @@ export class PokemonService {
     let pokemon: Pokemon;
 
     if (!isNaN(+term)) {
-      pokemon = await this.pokemonModel.findOne({ no: term });
+      pokemon = await this.pokemonModel
+        .findOne({ no: term })
+        .select('-__v')
+        .select('-_id');
     }
 
     if (!pokemon && isValidObjectId(term)) {
-      pokemon = await this.pokemonModel.findById(term);
+      pokemon = await this.pokemonModel
+        .findById(term)
+        .select('-__v')
+        .select('-_id');
     }
 
     if (!pokemon) {
-      pokemon = await this.pokemonModel.findOne({
-        name: term.toLocaleLowerCase().trim(),
-      });
+      pokemon = await this.pokemonModel
+        .findOne({
+          name: term.toLocaleLowerCase().trim(),
+        })
+        .select('-__v')
+        .select('-_id');
     }
 
     if (!pokemon)
