@@ -2,11 +2,11 @@ version: "3.8"
 
 services:
   db:
-    image: mongo:6
+    image: mongo:6-jammy
     restart: always
     ports:
       - 27017:27017
     environment:
-      - MONGODB_DATABASE= nest-pokemon
+      - MONGODB_DATABASE=nest-pokemon
     volumes:
       - ./mongo:/data/db
