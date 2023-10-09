@@ -35,7 +35,8 @@ lerna-debug.log*
 !.vscode/extensions.json
 
 # Database folder
-mongo
+mongo_dev
+mongo_prod
 
 # Environment files
 .env

@@ -1,30 +1,31 @@
-version: "3.8"
+version: '3.8'
 
 services:
   app:
     depends_on:
       - db
-    build: 
+    build:
       context: .
       dockerfile: Dockerfile
     image: tiagoramirez/pokeapp
-    container_name: pokeapp
+    container_name: poke-app
     restart: always
     ports:
-      - "${PORT}:${PORT}"
+      - '${PORT}:${PORT}'
     environment:
+      - PORT=${PORT}
       - NODE_ENV=${NODE_ENV}
       - MONGODB_URL=${MONGODB_URL}
-      - DEFAULT_LIMIT=${DEFAULT_LIMIT}
-      - PORT=${PORT}
+      - GET_ALL_POKEMONS_LIMIT=${GET_ALL_POKEMONS_LIMIT}
+      - SEED_LIMIT=${SEED_LIMIT}
+      - LOG_ENABLED=${LOG_ENABLED}
+      - MAX_POKEMONS=${MAX_POKEMONS}
 
   db:
-    image: mongo:6
-    container_name: mongo-poke
+    image: mongo:6-jammy
+    container_name: poke-db
     restart: always
-    ports:
-      - 27017:27017
     environment:
       - MONGODB_DATABASE=nest-pokemon
     volumes:
-      - ./mongo:/data/db
+      - ./mongo_prod:/data/db

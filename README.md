@@ -45,7 +45,7 @@ http://localhost:3000/api/v1/seed
 
 1. Clone `.env.template` and rename to `.env.prod`
 2. Fill environment variables in `.env.prod`
-   3.Build and run image
+3. Build and run image
 
 ```
 docker-compose -f docker-compose.prod.yml --env-file .env.prod up -d --build

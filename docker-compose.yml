@@ -1,4 +1,4 @@
-version: "3.8"
+version: '3.8'
 
 services:
   db:
@@ -9,4 +9,4 @@ services:
     environment:
       - MONGODB_DATABASE=nest-pokemon
     volumes:
-      - ./mongo:/data/db
+      - ./mongo_dev:/data/db
