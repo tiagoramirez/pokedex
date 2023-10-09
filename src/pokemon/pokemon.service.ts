@@ -59,6 +59,7 @@ export class PokemonService {
 
   async getMaxNumber(): Promise<number> {
     const maxPokemon = await this.pokemonModel.findOne({}).sort('-no').limit(1);
+    if (maxPokemon === null) return 0;
     return maxPokemon.no;
   }
 
@@ -124,11 +125,6 @@ export class PokemonService {
   }
 
   async remove(id: string) {
-    // // const pokemon = await this.findOne(id);
-    // // await pokemon.deleteOne();
-
-    // const result = await this.pokemonModel.findByIdAndDelete(id);
-
     if (this.envMode === 'prod')
       return { message: "Cannot delete any pokemon in 'production' mode" };
 

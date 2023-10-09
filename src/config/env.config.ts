@@ -4,5 +4,6 @@ export const EnvConfiguration = () => ({
   mongodb: process.env.MONGODB_URL,
   getAllLimit: process.env.GET_ALL_POKEMONS_LIMIT || 10,
   seedLimit: process.env.SEED_LIMIT || 100,
-  logEnabled: process.env.LOG_ENABLED || 0,
+  logEnabled: process.env.LOG_ENABLED === 'true' ? true : false,
+  maxPokemons: process.env.MAX_POKEMONS || 1010,
 });

@@ -11,7 +11,8 @@ import { SeedDto } from './dto/seed.dto';
 export class SeedService {
   private readonly seedLimit: number;
   private readonly envMode: string;
-  private readonly logEnabled: number;
+  private readonly logEnabled: boolean;
+  private readonly maxPokemons: number;
 
   constructor(
     private readonly pokemonService: PokemonService,
@@ -20,7 +21,8 @@ export class SeedService {
   ) {
     this.seedLimit = this.configService.get<number>('seedLimit');
     this.envMode = this.configService.get<string>('environment');
-    this.logEnabled = this.configService.get<number>('logEnabled');
+    this.logEnabled = this.configService.get<boolean>('logEnabled');
+    this.maxPokemons = this.configService.get<number>('maxPokemons');
   }
 
   async executeSeed({ limit = this.seedLimit }: SeedDto) {
@@ -28,6 +30,15 @@ export class SeedService {
       return { message: "Cannot execute seed in 'production' mode" };
 
     const offset: number = await this.pokemonService.getMaxNumber();
+
+    if (limit > this.maxPokemons - offset) {
+      limit = this.maxPokemons - offset;
+    }
+
+    if (limit == 0)
+      return {
+        message: `Max pokemons (${this.maxPokemons}) have been reached`,
+      };
 
     const pokemons = await this.getPokemons(limit, offset);
 
@@ -55,7 +66,7 @@ export class SeedService {
 
       const number: number = this.getNumberFromUrl(url);
 
-      if (this.logEnabled != 0)
+      if (this.logEnabled)
         console.log(`Searching extra info for pokemon number: ${number}`);
 
       const extraPokemonInfo = await this.getPokemonExtraInfo(number);
