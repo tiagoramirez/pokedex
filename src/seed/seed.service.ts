@@ -55,36 +55,36 @@ export class SeedService {
     limit: number,
     offset: number,
   ): Promise<CreatePokemonDto[]> {
-    const pokemonsToInsert: CreatePokemonDto[] = [];
-
     const { results } = await this.http.get<PokeResponse>(
       `https://pokeapi.co/api/v2/pokemon?limit=${limit}&offset=${offset}`,
     );
+
+    const promises: Promise<CreatePokemonDto>[] = [];
 
     for (const pokemon of results) {
       const { name, url } = pokemon;
 
       const number: number = this.getNumberFromUrl(url);
 
-      if (this.logEnabled)
-        console.log(`Searching extra info for pokemon number: ${number}`);
-
-      const extraPokemonInfo = await this.getPokemonExtraInfo(number);
-
-      pokemonsToInsert.push({
-        ...extraPokemonInfo,
-        name: name.toLocaleLowerCase(),
-        no: number,
-      });
+      promises.push(this.getPokemonFullInfo(number, name));
     }
+
+    const pokemonsToInsert = await Promise.all(promises);
 
     return pokemonsToInsert;
   }
 
-  private async getPokemonExtraInfo(pokeNumber: number) {
+  private async getPokemonFullInfo(
+    pokeNumber: number,
+    pokeName: string,
+  ): Promise<CreatePokemonDto> {
     const { sprites, types } = await this.http.get<PokeExtraInfoResponse>(
       `https://pokeapi.co/api/v2/pokemon-form/${pokeNumber}`,
     );
+
+    if (this.logEnabled)
+      console.log(`Searched extra info for pokemon number: ${pokeNumber}`);
+
     const pokemonSprites = {
       front_default: sprites.front_default,
       front_female: sprites.front_female,
@@ -97,7 +97,12 @@ export class SeedService {
       pokemonTypes.push(type.name);
     });
 
-    return { sprites: pokemonSprites, types: pokemonTypes };
+    return {
+      no: pokeNumber,
+      name: pokeName,
+      sprites: pokemonSprites,
+      types: pokemonTypes,
+    };
   }
 
   private getNumberFromUrl(url: string) {
