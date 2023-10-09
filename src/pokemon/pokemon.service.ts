@@ -14,7 +14,7 @@ import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class PokemonService {
-  private readonly defaultLimit: number;
+  private readonly getAllLimit: number;
   private readonly envMode: string;
 
   constructor(
@@ -22,7 +22,7 @@ export class PokemonService {
     private readonly pokemonModel: Model<Pokemon>,
     private readonly configService: ConfigService,
   ) {
-    this.defaultLimit = this.configService.get<number>('defaultLimit');
+    this.getAllLimit = this.configService.get<number>('getAllLimit');
     this.envMode = this.configService.get<string>('environment');
   }
 
@@ -47,7 +47,7 @@ export class PokemonService {
     await this.pokemonModel.insertMany(createPokemonDtos);
   }
 
-  async findAll({ limit = this.defaultLimit, offset = 0 }: PaginationDto) {
+  async findAll({ limit = this.getAllLimit, offset = 0 }: PaginationDto) {
     return await this.pokemonModel
       .find()
       .limit(limit)
@@ -55,6 +55,12 @@ export class PokemonService {
       .sort({ no: 1 })
       .select('-__v')
       .select('-_id');
+  }
+
+  async getMaxNumber(): Promise<number> {
+    const maxPokemon = await this.pokemonModel.findOne({}).sort('-no').limit(1);
+    if (maxPokemon === null) return 0;
+    return maxPokemon.no;
   }
 
   async findOne(term: string) {
@@ -119,11 +125,6 @@ export class PokemonService {
   }
 
   async remove(id: string) {
-    // // const pokemon = await this.findOne(id);
-    // // await pokemon.deleteOne();
-
-    // const result = await this.pokemonModel.findByIdAndDelete(id);
-
     if (this.envMode === 'prod')
       return { message: "Cannot delete any pokemon in 'production' mode" };
 
