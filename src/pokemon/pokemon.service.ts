@@ -26,32 +26,15 @@ export class PokemonService {
     this.envMode = this.configService.get<string>('environment');
   }
 
-  async create(createPokemonDto: CreatePokemonDto) {
-    if (this.envMode === 'prod')
-      return { message: "Cannot create pokemon in 'production' mode" };
-
-    const lowerCasedName = createPokemonDto.name.toLocaleLowerCase().trim();
-    const pokemonToInsert = {
-      ...createPokemonDto,
-      name: lowerCasedName,
-    };
-    try {
-      const pokemon = await this.pokemonModel.create(pokemonToInsert);
-      return pokemon;
-    } catch (error) {
-      this.handleExceptions(error);
-    }
-  }
-
-  async createMany(createPokemonDtos: CreatePokemonDto[]) {
+  async createMany(createPokemonDtos: CreatePokemonDto[]): Promise<void> {
     await this.pokemonModel.insertMany(createPokemonDtos);
   }
 
-  async findAll({ limit = this.getAllLimit, offset = 0 }: PaginationDto) {
+  async findAll(pagination: PaginationDto): Promise<Pokemon[]> {
     return await this.pokemonModel
       .find()
-      .limit(limit)
-      .skip(offset)
+      .limit(pagination.limit || this.getAllLimit)
+      .skip(pagination.offset || 0)
       .sort({ no: 1 })
       .select('-__v')
       .select('-_id');
@@ -98,6 +81,7 @@ export class PokemonService {
   }
 
   async update(term: string, updatePokemonDto: UpdatePokemonDto) {
+    // TODO: Change to admin role
     if (this.envMode === 'prod')
       return { message: "Cannot update any pokemon in 'production' mode" };
 
@@ -122,20 +106,6 @@ export class PokemonService {
     } catch (error) {
       this.handleExceptions(error);
     }
-  }
-
-  async remove(id: string) {
-    if (this.envMode === 'prod')
-      return { message: "Cannot delete any pokemon in 'production' mode" };
-
-    const { deletedCount } = await this.pokemonModel.deleteOne({ _id: id });
-    if (deletedCount === 0)
-      throw new NotFoundException(`Pokemon whith id "${id}" not found`);
-    return { message: `Pokemon with id "${id}" was deleted.` };
-  }
-
-  async removeAll() {
-    await this.pokemonModel.deleteMany({});
   }
 
   private handleExceptions(error: any) {

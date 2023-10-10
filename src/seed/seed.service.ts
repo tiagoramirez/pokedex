@@ -26,6 +26,7 @@ export class SeedService {
   }
 
   async executeSeed({ limit = this.seedLimit }: SeedDto) {
+    // TODO: Change to admin role
     if (this.envMode === 'prod')
       return { message: "Cannot execute seed in 'production' mode" };
 
@@ -105,7 +106,7 @@ export class SeedService {
     };
   }
 
-  private getNumberFromUrl(url: string) {
+  private getNumberFromUrl(url: string): number {
     const splittedUrl = url.split('/');
     return +splittedUrl[splittedUrl.length - 2];
   }
