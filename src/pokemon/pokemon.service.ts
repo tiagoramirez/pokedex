@@ -1,21 +1,16 @@
-import {
-  BadRequestException,
-  Injectable,
-  InternalServerErrorException,
-  NotFoundException,
-} from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreatePokemonDto } from './dto/create-pokemon.dto';
-import { UpdatePokemonDto } from './dto/update-pokemon.dto';
 import { Model, isValidObjectId } from 'mongoose';
 import { Pokemon } from './entities/pokemon.entity';
 import { InjectModel } from '@nestjs/mongoose';
 import { PaginationDto } from '../common/dto/pagination.dto';
 import { ConfigService } from '@nestjs/config';
+import { getRandomInt } from '../common/functions/getRandomNumber';
 
 @Injectable()
 export class PokemonService {
   private readonly getAllLimit: number;
-  private readonly envMode: string;
+  private totalPokemons: number;
 
   constructor(
     @InjectModel(Pokemon.name)
@@ -23,44 +18,20 @@ export class PokemonService {
     private readonly configService: ConfigService,
   ) {
     this.getAllLimit = this.configService.get<number>('getAllLimit');
-    this.envMode = this.configService.get<string>('environment');
   }
 
-  async create(createPokemonDto: CreatePokemonDto) {
-    if (this.envMode === 'prod')
-      return { message: "Cannot create pokemon in 'production' mode" };
-
-    const lowerCasedName = createPokemonDto.name.toLocaleLowerCase().trim();
-    const pokemonToInsert = {
-      ...createPokemonDto,
-      name: lowerCasedName,
-    };
-    try {
-      const pokemon = await this.pokemonModel.create(pokemonToInsert);
-      return pokemon;
-    } catch (error) {
-      this.handleExceptions(error);
-    }
-  }
-
-  async createMany(createPokemonDtos: CreatePokemonDto[]) {
+  async createMany(createPokemonDtos: CreatePokemonDto[]): Promise<void> {
     await this.pokemonModel.insertMany(createPokemonDtos);
   }
 
-  async findAll({ limit = this.getAllLimit, offset = 0 }: PaginationDto) {
+  async findAll(pagination: PaginationDto): Promise<Pokemon[]> {
     return await this.pokemonModel
       .find()
-      .limit(limit)
-      .skip(offset)
+      .limit(pagination.limit || this.getAllLimit)
+      .skip(pagination.offset || 0)
       .sort({ no: 1 })
       .select('-__v')
       .select('-_id');
-  }
-
-  async getMaxNumber(): Promise<number> {
-    const maxPokemon = await this.pokemonModel.findOne({}).sort('-no').limit(1);
-    if (maxPokemon === null) return 0;
-    return maxPokemon.no;
   }
 
   async findOne(term: string) {
@@ -97,60 +68,21 @@ export class PokemonService {
     return pokemon;
   }
 
-  async update(term: string, updatePokemonDto: UpdatePokemonDto) {
-    if (this.envMode === 'prod')
-      return { message: "Cannot update any pokemon in 'production' mode" };
+  async getMaxNumber(): Promise<number> {
+    const maxPokemon = await this.pokemonModel.findOne({}).sort('-no').limit(1);
+    if (maxPokemon === null) return 0;
+    return maxPokemon.no;
+  }
 
-    const pokemon = await this.findOne(term);
-
-    try {
-      if (updatePokemonDto.name) {
-        const lowerCasedName = updatePokemonDto.name.toLocaleLowerCase().trim();
-
-        await pokemon.updateOne({ ...updatePokemonDto, name: lowerCasedName });
-
-        return {
-          ...pokemon.toJSON(),
-          ...updatePokemonDto,
-          name: lowerCasedName,
-        };
-      } else {
-        await pokemon.updateOne(updatePokemonDto);
-
-        return { ...pokemon.toJSON(), ...updatePokemonDto };
-      }
-    } catch (error) {
-      this.handleExceptions(error);
+  async getRandomPokemon({ limit = 1 }: PaginationDto): Promise<Pokemon[]> {
+    if (this.totalPokemons == null || this.totalPokemons == undefined)
+      this.totalPokemons = await this.getMaxNumber();
+    const pokemons: Pokemon[] = [];
+    for (let i = 0; i < limit; i++) {
+      const randomNumber: number = getRandomInt(1, this.totalPokemons);
+      const pokemon = await this.findOne('' + randomNumber);
+      pokemons.push(pokemon);
     }
-  }
-
-  async remove(id: string) {
-    if (this.envMode === 'prod')
-      return { message: "Cannot delete any pokemon in 'production' mode" };
-
-    const { deletedCount } = await this.pokemonModel.deleteOne({ _id: id });
-    if (deletedCount === 0)
-      throw new NotFoundException(`Pokemon whith id "${id}" not found`);
-    return { message: `Pokemon with id "${id}" was deleted.` };
-  }
-
-  async removeAll() {
-    await this.pokemonModel.deleteMany({});
-  }
-
-  private handleExceptions(error: any) {
-    if (error.code && error.code === 11000) {
-      const keyError = Object.keys(error.keyValue)[0];
-      const valueError = Object.values(error.keyValue)[0];
-      throw new BadRequestException(
-        `Pokemon with ${keyError} '${valueError}' already exists`,
-      );
-    } else {
-      console.log('Unhandled error: ');
-      console.log(error);
-      throw new InternalServerErrorException(
-        'Unable to process request. Check server logs',
-      );
-    }
+    return pokemons;
   }
 }
