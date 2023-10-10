@@ -5,7 +5,7 @@ import { CreatePokemonDto } from '../pokemon/dto/create-pokemon.dto';
 import { AxiosAdapter } from '../common/adapters/axios.adapter';
 import { PokeExtraInfoResponse } from './interfaces/poke-extra-info-response.interface';
 import { ConfigService } from '@nestjs/config';
-import { SeedDto } from './dto/seed.dto';
+import { PaginationDto } from '../common/dto/pagination.dto';
 
 @Injectable()
 export class SeedService {
@@ -25,7 +25,7 @@ export class SeedService {
     this.maxPokemons = this.configService.get<number>('maxPokemons');
   }
 
-  async executeSeed({ limit = this.seedLimit }: SeedDto) {
+  async executeSeed({ limit = this.seedLimit }: PaginationDto) {
     // TODO: Change to admin role
     if (this.envMode === 'prod')
       return { message: "Cannot execute seed in 'production' mode" };

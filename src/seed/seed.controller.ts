@@ -1,13 +1,16 @@
 import { Controller, Get, Query } from '@nestjs/common';
 import { SeedService } from './seed.service';
-import { SeedDto } from './dto/seed.dto';
+import { ApiQuery, ApiTags } from '@nestjs/swagger';
+import { PaginationDto } from '../common/dto/pagination.dto';
 
+@ApiTags('seed')
 @Controller('seed')
 export class SeedController {
   constructor(private readonly seedService: SeedService) {}
 
   @Get()
-  executeSeed(@Query() seedDto: SeedDto) {
-    return this.seedService.executeSeed(seedDto);
+  @ApiQuery({ name: 'limit', required: false })
+  executeSeed(@Query() paginationDto: PaginationDto) {
+    return this.seedService.executeSeed(paginationDto);
   }
 }
