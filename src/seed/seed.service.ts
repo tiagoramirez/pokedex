@@ -5,11 +5,9 @@ import { CreatePokemonDto } from '../pokemon/dto/create-pokemon.dto';
 import { AxiosAdapter } from '../common/adapters/axios.adapter';
 import { PokeExtraInfoResponse } from './interfaces/poke-extra-info-response.interface';
 import { ConfigService } from '@nestjs/config';
-import { PaginationDto } from '../common/dto/pagination.dto';
 
 @Injectable()
 export class SeedService {
-  private readonly seedLimit: number;
   private readonly envMode: string;
   private readonly logEnabled: boolean;
   private readonly maxPokemons: number;
@@ -19,29 +17,17 @@ export class SeedService {
     private readonly http: AxiosAdapter,
     private readonly configService: ConfigService,
   ) {
-    this.seedLimit = this.configService.get<number>('seedLimit');
     this.envMode = this.configService.get<string>('environment');
     this.logEnabled = this.configService.get<boolean>('logEnabled');
     this.maxPokemons = this.configService.get<number>('maxPokemons');
   }
 
-  async executeSeed({ limit = this.seedLimit }: PaginationDto) {
+  async executeSeed() {
     // TODO: Change to admin role
     if (this.envMode === 'prod')
       return { message: "Cannot execute seed in 'production' mode" };
 
-    const offset: number = await this.pokemonService.getMaxNumber();
-
-    if (limit > this.maxPokemons - offset) {
-      limit = this.maxPokemons - offset;
-    }
-
-    if (limit == 0)
-      return {
-        message: `Max pokemons (${this.maxPokemons}) have been reached`,
-      };
-
-    const pokemons = await this.getPokemons(limit, offset);
+    const pokemons = await this.getPokemons();
 
     try {
       await this.pokemonService.createMany(pokemons);
@@ -52,12 +38,9 @@ export class SeedService {
     return { message: 'Seed executed' };
   }
 
-  private async getPokemons(
-    limit: number,
-    offset: number,
-  ): Promise<CreatePokemonDto[]> {
+  private async getPokemons() {
     const { results } = await this.http.get<PokeResponse>(
-      `https://pokeapi.co/api/v2/pokemon?limit=${limit}&offset=${offset}`,
+      `https://pokeapi.co/api/v2/pokemon?limit=${this.maxPokemons}`,
     );
 
     const promises: Promise<CreatePokemonDto>[] = [];
