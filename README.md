@@ -35,7 +35,7 @@ docker-compose up -d
 yarn start:dev
 ```
 
-8. Restore database with seed
+8. Restore database with seed <sup>1*</sup>
 
 ```
 http://localhost:3000/api/v1/seed
@@ -58,3 +58,5 @@ docker-compose -f docker-compose.prod.yml --env-file .env.prod up -d --build
 - Docker
 - HTML + CSS
 - Swagger
+---
+1*: In the `.env` file the variables that starts with ___POKEMON_REGION_PAGE___ have to be filled with a website that contains the ___global pokemon number___ in the ___first column of each table row___. It is going to skip the first and the last table of the page (due to the example pages in the `.env_template` file).

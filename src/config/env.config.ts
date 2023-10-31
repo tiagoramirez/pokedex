@@ -5,4 +5,13 @@ export const EnvConfiguration = () => ({
   getAllLimit: process.env.GET_ALL_POKEMONS_LIMIT || 10,
   logEnabled: process.env.LOG_ENABLED === 'true' ? true : false,
   maxPokemons: process.env.MAX_POKEMONS || 1010,
+  kantoPage: process.env.POKEMON_REGION_PAGE_KANTO,
+  johtoPage: process.env.POKEMON_REGION_PAGE_JOHTO,
+  hoennPage: process.env.POKEMON_REGION_PAGE_HOENN,
+  sinnohPage: process.env.POKEMON_REGION_PAGE_SINNOH,
+  teseliaPage: process.env.POKEMON_REGION_PAGE_TESELIA,
+  kalosPage: process.env.POKEMON_REGION_PAGE_KALOS,
+  alolaPage: process.env.POKEMON_REGION_PAGE_ALOLA,
+  galarPage: process.env.POKEMON_REGION_PAGE_GALAR,
+  paldeaPage: process.env.POKEMON_REGION_PAGE_PALDEA,
 });

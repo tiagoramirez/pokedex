@@ -10,7 +10,7 @@ import { getRandomInt } from '../common/functions/getRandomNumber';
 @Injectable()
 export class PokemonService {
   private readonly getAllLimit: number;
-  private totalPokemons: number;
+  private readonly maxPokemons: number;
 
   constructor(
     @InjectModel(Pokemon.name)
@@ -18,6 +18,7 @@ export class PokemonService {
     private readonly configService: ConfigService,
   ) {
     this.getAllLimit = this.configService.get<number>('getAllLimit');
+    this.maxPokemons = this.configService.get<number>('maxPokemons');
   }
 
   async createMany(createPokemonDtos: CreatePokemonDto[]): Promise<void> {
@@ -68,21 +69,17 @@ export class PokemonService {
     return pokemon;
   }
 
-  async getMaxNumber(): Promise<number> {
-    const maxPokemon = await this.pokemonModel.findOne({}).sort('-no').limit(1);
-    if (maxPokemon === null) return 0;
-    return maxPokemon.no;
-  }
-
   async getRandomPokemon({ limit = 1 }: PaginationDto): Promise<Pokemon[]> {
-    if (this.totalPokemons == null || this.totalPokemons == undefined)
-      this.totalPokemons = await this.getMaxNumber();
     const pokemons: Pokemon[] = [];
     for (let i = 0; i < limit; i++) {
-      const randomNumber: number = getRandomInt(1, this.totalPokemons);
+      const randomNumber: number = getRandomInt(1, this.maxPokemons);
       const pokemon = await this.findOne('' + randomNumber);
       pokemons.push(pokemon);
     }
     return pokemons;
+  }
+
+  async removeAll() {
+    await this.pokemonModel.deleteMany({});
   }
 }

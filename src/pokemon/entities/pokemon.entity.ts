@@ -21,6 +21,11 @@ export class Pokemon extends Document {
 
   @Prop()
   sprites: Sprites;
+
+  @Prop({
+    index: true,
+  })
+  regions: string[];
 }
 
 export const PokemonSchema = SchemaFactory.createForClass(Pokemon);

@@ -21,6 +21,9 @@ export class CreatePokemonDto {
   types: string[];
 
   sprites: Sprites;
+
+  @IsArray()
+  regions: string[];
 }
 
 class Sprites {
@@ -33,6 +36,7 @@ class Sprites {
   @IsUrl()
   front_female?: string;
 
+  @IsOptional()
   @IsString()
   @IsUrl()
   front_shiny: string;
