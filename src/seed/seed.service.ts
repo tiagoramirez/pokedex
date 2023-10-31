@@ -13,7 +13,6 @@ import { HttpStatusCode } from 'axios';
 @Injectable()
 export class SeedService {
   private readonly envMode: string;
-  private readonly logEnabled: boolean;
   private readonly maxPokemons: number;
   private readonly kantoPage: string;
   private readonly johtoPage: string;
@@ -32,7 +31,6 @@ export class SeedService {
     private readonly regionService: RegionService,
   ) {
     this.envMode = this.configService.get<string>('environment');
-    this.logEnabled = this.configService.get<boolean>('logEnabled');
     this.maxPokemons = this.configService.get<number>('maxPokemons');
     this.kantoPage = this.configService.get<string>('kantoPage');
     this.johtoPage = this.configService.get<string>('johtoPage');
